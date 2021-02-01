@@ -19,12 +19,12 @@ class DbalRepository implements StandardRepository
 
     private Connection $connection; // 1
 
-    private Serializer $serializer; // 2
+//    private Serializer $serializer; // 2
 
-    public function __construct(Serializer $serializer)
+    public function __construct()
     {
         $this->connection = DriverManager::getConnection(array('url' => self::CONNECTION_DSN));
-        $this->serializer = $serializer;
+//        $this->serializer = $serializer;
     }
 
     public function canHandle(string $aggregateClassName): bool
