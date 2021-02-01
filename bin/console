@@ -28,3 +28,6 @@ if ($firstArgument === "ecotone:quickstart") {
     ))->run();
 }
 
+
+echo "\n";
+
