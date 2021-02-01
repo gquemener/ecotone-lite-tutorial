@@ -11,7 +11,7 @@ class CostConverter
     /**
      * @Converter()
      */
-    public function convertFrom(Cost $cost): int
+    public function convertFrom(Cost $cost) : int
     {
         return $cost->getAmount();
     }
@@ -19,7 +19,7 @@ class CostConverter
     /**
      * @Converter()
      */
-    public function convertTo(int $amount): Cost
+    public function convertTo(int $amount) : Cost
     {
         return new Cost($amount);
     }

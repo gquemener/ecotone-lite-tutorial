@@ -21,16 +21,22 @@ class EcotoneQuickstart
     {
         $this->commandBus->convertAndSend(
             "product.register",
-            MediaType::APPLICATION_JSON,
-            \json_encode(["productId" => 1, "cost" => 100])
+            MediaType::APPLICATION_X_PHP_ARRAY,
+            ["productId" => 1, "cost" => 100]
         );
-
         $this->commandBus->convertAndSend(
-            "product.changePrice",
-            MediaType::APPLICATION_JSON,
-            \json_encode(["productId" => 1, "cost" => 110])
+            "product.register",
+            MediaType::APPLICATION_X_PHP_ARRAY,
+            ["productId" => 2, "cost" => 300]
         );
 
-        echo $this->queryBus->convertAndSend("product.getCost", MediaType::APPLICATION_JSON, \json_encode(["productId" => 1]));
+        $orderId = 990;
+        $this->commandBus->convertAndSend(
+            "order.place",
+            MediaType::APPLICATION_X_PHP_ARRAY,
+            ["orderId" => $orderId, "productIds" => [1,2]]
+        );
+
+        echo $this->queryBus->convertAndSend("order.getTotalPrice", MediaType::APPLICATION_X_PHP_ARRAY, ["orderId" => $orderId]);
     }
 }

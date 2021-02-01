@@ -2,12 +2,16 @@
 
 namespace App\Infrastructure\AddUserId;
 
-use Ecotone\Messaging\Annotation\Interceptor\Before;
+use Ecotone\Messaging\Annotation\Interceptor\MethodInterceptor;
+use Ecotone\Messaging\Annotation\Interceptor\Presend;
 
+/**
+ * @MethodInterceptor()
+ */
 class AddUserIdService
 {
     /**
-     * @Before(
+     * @Presend(
      *     pointcut="@(App\Infrastructure\AddUserId\AddUserId)",
      *     changeHeaders=true,
      *     precedence=0
