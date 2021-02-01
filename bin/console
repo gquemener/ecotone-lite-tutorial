@@ -28,6 +28,19 @@ if ($firstArgument === "ecotone:quickstart") {
     ))->run();
 }
 
+if ($firstArgument === "ecotone:list-all-asynchronous-endpoints") {
+    echo "Endpoint Names\n";
+    foreach ($messagingSystem->getListOfSeparatelyRunningConsumers() as $consumer) {
+        echo $consumer . "\n";
+    }
+}
+
+if ($firstArgument === "ecotone:run-endpoint") {
+    if (!isset($argv[2])) {
+        throw new \InvalidArgumentException("Missing consumer name");
+    }
+
+    $messagingSystem->runSeparatelyRunningEndpointBy($argv[2]);
+}
 
 echo "\n";
-
