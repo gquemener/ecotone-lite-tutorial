@@ -2,13 +2,13 @@ version: "3"
 
 services:
   app:
-    image: simplycodedsoftware/ci:7.3
-    container_name: "ecotone_example"
+    image: simplycodedsoftware/ci:7.4
     volumes:
       - "$PWD:/data/app"
     user: 1000:1000
+    container_name: "ecotone-quickstart"
     working_dir: "/data/app"
-    command: sleep 99999
+    command: sleep 999999
     networks:
       - default
   rabbitmq:
@@ -16,12 +16,8 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
+    ports:
+      - 5672:5672
+      - 15672:15672
     networks:
       - default
-  database:
-    image: postgres:12.1
-    networks:
-      - default
-    environment:
-      POSTGRES_USER: "ecotone"
-      POSTGRES_PASSWORD: "secret"

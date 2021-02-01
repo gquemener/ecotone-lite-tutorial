@@ -1,0 +1,30 @@
+#!/usr/bin/env php
+<?php
+
+use Ecotone\Lite\EcotoneLiteConfiguration;
+use Ecotone\Messaging\Config\ApplicationConfiguration;
+
+$rootCatalog = realpath(__DIR__ . "/..");
+require $rootCatalog . "/vendor/autoload.php";
+
+$messagingSystem = EcotoneLiteConfiguration::createWithConfiguration(
+    $rootCatalog,
+    new DI\Container(), // use whatever PSR compatible container you like
+    ApplicationConfiguration::createWithDefaults()
+        ->withNamespaces(["App"])
+);
+
+if (!isset($argv[1])) {
+    echo "Provide command details...\n";
+    return;
+}
+
+$firstArgument = $argv[1];
+if ($firstArgument === "ecotone:quickstart") {
+//    This is automatically wired together, when using Laravel or Symfony integration
+    (new \App\EcotoneQuickstart(
+        $messagingSystem->getGatewayByName(\Ecotone\Modelling\CommandBus::class),
+        $messagingSystem->getGatewayByName(\Ecotone\Modelling\QueryBus::class)
+    ))->run();
+}
+
