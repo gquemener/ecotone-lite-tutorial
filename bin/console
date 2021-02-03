@@ -37,7 +37,7 @@ $stubSerializer = new StubSerializer();
 
 $container->set(Serializer::class, $stubSerializer);
 // add additional services
-
+$container->set(Enqueue\AmqpLib\AmqpConnectionFactory::class, new Enqueue\AmqpLib\AmqpConnectionFactory("amqp+lib://guest:guest@rabbitmq:5672//"));
 
 
 $messagingSystem = EcotoneLiteConfiguration::createWithConfiguration(
