@@ -1,30 +1,66 @@
 #!/usr/bin/env php
 <?php
 
+use App\EcotoneQuickstart;
 use Ecotone\Lite\EcotoneLiteConfiguration;
 use Ecotone\Messaging\Config\ApplicationConfiguration;
+use Ecotone\Messaging\Gateway\Converter\Serializer;
+use Ecotone\Modelling\CommandBus;
+use Ecotone\Modelling\QueryBus;
 
 $rootCatalog = realpath(__DIR__ . "/..");
 require $rootCatalog . "/vendor/autoload.php";
 
+// Needed for lesson 6
+class StubSerializer implements Serializer
+{
+    private ?Serializer $serializer = null;
+
+    public function setSerializer(?Serializer $serializer): void
+    {
+        $this->serializer = $serializer;
+    }
+
+    public function convertFromPHP($data, string $targetMediaType)
+    {
+        return $this->serializer->convertFromPHP($data, $targetMediaType);
+    }
+
+    public function convertToPHP($data, string $sourceMediaType, string $targetType)
+    {
+        return $this->serializer->convertToPHP($data, $sourceMediaType, $targetType);
+    }
+}
+
+$container      = new DI\Container();
+$stubSerializer = new StubSerializer();
+
+$container->set(Serializer::class, $stubSerializer);
+// add additional services
+
+
+
 $messagingSystem = EcotoneLiteConfiguration::createWithConfiguration(
     $rootCatalog,
-    new DI\Container(), // use whatever PSR compatible container you like
+    $container, // use whatever PSR compatible container you like
     ApplicationConfiguration::createWithDefaults()
         ->withNamespaces(["App"])
 );
+// Needed for lesson 6
+$stubSerializer->setSerializer($messagingSystem->getGatewayByName(Serializer::class));
 
 if (!isset($argv[1])) {
     echo "Provide command details...\n";
+
     return;
 }
 
 $firstArgument = $argv[1];
 if ($firstArgument === "ecotone:quickstart") {
 //    This is automatically wired together, when using Laravel or Symfony integration
-    (new \App\EcotoneQuickstart(
-        $messagingSystem->getGatewayByName(\Ecotone\Modelling\CommandBus::class),
-        $messagingSystem->getGatewayByName(\Ecotone\Modelling\QueryBus::class)
+    (new EcotoneQuickstart(
+        $messagingSystem->getGatewayByName(CommandBus::class),
+        $messagingSystem->getGatewayByName(QueryBus::class)
     ))->run();
 }
 
@@ -37,7 +73,7 @@ if ($firstArgument === "ecotone:list-all-asynchronous-endpoints") {
 
 if ($firstArgument === "ecotone:run-endpoint") {
     if (!isset($argv[2])) {
-        throw new \InvalidArgumentException("Missing consumer name");
+        throw new InvalidArgumentException("Missing consumer name");
     }
 
     $messagingSystem->runSeparatelyRunningEndpointBy($argv[2]);
