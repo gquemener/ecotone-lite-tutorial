@@ -2,17 +2,11 @@
 
 namespace App\Infrastructure\AddUserId;
 
-use Ecotone\Messaging\Annotation\Interceptor\Before;
+use Ecotone\Messaging\Attribute\Interceptor\Before;
 
 class AddUserIdService
 {
-    /**
-     * @Before(
-     *     pointcut="@(App\Infrastructure\AddUserId\AddUserId)",
-     *     changeHeaders=true,
-     *     precedence=0
-     * )
-     */
+    #[Before(0, AddUserId::class, true)]
     public function add() : array
     {
         return ["userId" => 1];
