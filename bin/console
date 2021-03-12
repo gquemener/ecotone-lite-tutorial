@@ -39,7 +39,8 @@ $messagingSystem = EcotoneLiteConfiguration::createWithConfiguration(
     $container,
     ServiceConfiguration::createWithDefaults()
         ->withNamespaces(["App"]),
-    []
+    [],
+    false
 );
 
 if (!isset($argv[1])) {
