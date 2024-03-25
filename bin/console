@@ -3,14 +3,14 @@
 
 use App\EcotoneQuickstart;
 use DI\Container;
-use Ecotone\Lite\EcotoneLiteConfiguration;
-use Ecotone\Lite\GatewayAwareContainer;
+use Ecotone\Lite\EcotoneLite;
 use Ecotone\Messaging\Config\ServiceConfiguration;
+use Ecotone\Messaging\Handler\ReferenceSearchService;
 
 $rootCatalog = realpath(__DIR__ . "/..");
 require $rootCatalog . "/vendor/autoload.php";
 
-$container = new class() implements GatewayAwareContainer {
+$container = new class() implements ReferenceSearchService {
     private Container $container;
 
     public function __construct()
@@ -18,29 +18,29 @@ $container = new class() implements GatewayAwareContainer {
         $this->container = new Container();
     }
 
-    public function get($id)
+    public function get($id): object
     {
         return $this->container->get($id);
     }
 
-    public function has($id)
+    public function has($id): bool
     {
         return $this->container->has($id);
     }
 
-    public function addGateway(string $referenceName, object $gateway): void
+    public function set($id, $value): void
     {
-        $this->container->set($referenceName, $gateway);
+        $this->container->set($id, $value);
     }
 };
 
-$messagingSystem = EcotoneLiteConfiguration::createWithConfiguration(
-    $rootCatalog,
+$messagingSystem = EcotoneLite::bootstrap(
+    [],
     $container,
     ServiceConfiguration::createWithDefaults()
-        ->withNamespaces(["App"]),
-    [],
-    false
+        ->withNamespaces(['App']),
+    pathToRootCatalog: $rootCatalog,
+    allowGatewaysToBeRegisteredInContainer: true,
 );
 
 if (!isset($argv[1])) {
