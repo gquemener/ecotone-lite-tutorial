@@ -3,7 +3,7 @@
 
 use App\EcotoneQuickstart;
 use DI\Container;
-use Ecotone\Lite\EcotoneLiteConfiguration;
+use Ecotone\Lite\EcotoneLite;
 use Ecotone\Messaging\Handler\ReferenceSearchService;
 use Ecotone\Messaging\Config\ServiceConfiguration;
 
@@ -18,29 +18,29 @@ $container = new class() implements ReferenceSearchService {
         $this->container = new Container();
     }
 
-    public function get($referenceName): object
+    public function get($id): object
     {
-        return $this->container->get($referenceName);
+        return $this->container->get($id);
     }
 
-    public function has($referenceName): bool
+    public function has($id): bool
     {
-        return $this->container->has($referenceName);
+        return $this->container->has($id);
     }
 
-    public function addGateway(string $referenceName, object $gateway): void
+    public function set($id, $value): void
     {
-        $this->container->set($referenceName, $gateway);
+        $this->container->set($id, $value);
     }
 };
 
-$messagingSystem = EcotoneLiteConfiguration::createWithConfiguration(
-    $rootCatalog,
+$messagingSystem = EcotoneLite::bootstrap(
+    [],
     $container,
     ServiceConfiguration::createWithDefaults()
-        ->withNamespaces(["App"]),
-    [],
-    false
+        ->withNamespaces(['App']),
+    pathToRootCatalog: $rootCatalog,
+    allowGatewaysToBeRegisteredInContainer: true,
 );
 
 if (!isset($argv[1])) {
