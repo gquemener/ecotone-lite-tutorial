@@ -16,9 +16,7 @@ class EcotoneQuickstart
 
   public function run() : void
   {
-    $cmd = new RegisterProductCommand(1, 150);
-    xdebug_break();
-    $this->commandBus->send($cmd);
+    $this->commandBus->send(new RegisterProductCommand(1, 150));
 
     echo $this->queryBus->send(new GetProductPriceQuery(1));
   }
