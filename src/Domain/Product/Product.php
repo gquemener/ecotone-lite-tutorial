@@ -3,17 +3,17 @@
 namespace App\Domain\Product;
 
 use Ecotone\Modelling\Attribute\Aggregate;
-use Ecotone\Modelling\Attribute\AggregateIdentifier;
+use Ecotone\Modelling\Attribute\Identifier;
 use Ecotone\Modelling\Attribute\CommandHandler;
 use Ecotone\Modelling\Attribute\QueryHandler;
-use Ecotone\Modelling\WithAggregateEvents;
+use Ecotone\Modelling\WithEvents;
 
 #[Aggregate]
 class Product
 {
-    use WithAggregateEvents;
+    use WithEvents;
 
-    #[AggregateIdentifier]
+    #[Identifier]
     private int $productId;
 
     private int $cost;
